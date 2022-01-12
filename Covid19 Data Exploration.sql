@@ -211,5 +211,5 @@ FROM
     AND dea.date = vac.date
 WHERE 
     dea.continent IS NOT NULL
-
+ORDER BY
   total_death_count DESC
