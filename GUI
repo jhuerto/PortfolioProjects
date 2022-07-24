@@ -1,0 +1,52 @@
+import PySimpleGUI as sg
+import pandas as pd
+import numpy as np
+import openpyxl
+from openpyxl import Workbook, load_workbook
+
+sg.theme('SystemDefaultForReal')
+
+EXCEL_FILE = 'ListOfContractsAllServices.xlsx'
+df = pd.read_excel(EXCEL_FILE)
+
+
+layout = [
+    [sg.Text('Type of Service', size=(25,1)), sg.Combo(['Procured Services',
+                                                        'Audit Partnerships',
+                                                        'CSIR/Professional Services', 'CSIR Reseller SaaS Agreements', 'Accredited Certification Audits',
+                                                        'Customised Audits', 'Training', 'Consultancy Services',
+                                                        'Product Trials', 'International Projects'], key='Type of Service')],
+    [sg.Text('Year', size=(25,1)), sg.Combo(['2018', '2019', '2020', '2021', '2022', '2023'], key='Year')],
+    [sg.Text('Contracting Party', size=(25,1)), sg.InputText(key='Contracting Party')],
+    [sg.Text('Type of Contract', size=(25,1)), sg.Combo(['Consortium Agreement', 'Order Form', 'Amendment Agreement', 'Change Control Note',
+                                                          'Statement of Work', 'Reseller Agreement', 'MOU', 'Framework Agreement/MSA',
+                                                          'Services Agreement', 'Partner Agreement'], key='Type of Contract')],
+    [sg.Text('Service Description', size=(25,1)), sg.InputText(key='Service Description')],
+    [sg.Text('Service Region', size=(25,1)), sg.InputText(key='Service Region')],
+    [sg.Text('Contract Term/Duration', size=(25,1)), sg.Combo(['More than a Year', 'Less than a Year', 'Indefinite',
+                                                               'Not Applicable', 'Not Stated'], key='Contract Term/Duration')],
+    [sg.Text('Details of Contract Term', size=(25,1)), sg.InputText(key='Details of Contract Term')],
+    [sg.Text('BSI Terms or Supplier Terms', size=(25,1)), sg.Combo(['Supplier Terms', 'BSI IT MSA', 'BSI Consultancy Terms',
+                                                                    'BSI Terms of Business', 'BSI Subcontracting Terms', 'BSI Terms'], key='BSI Terms or Supplier Terms')],
+    [sg.Submit(), sg.Button('Clear'), sg.Exit()]
+]
+
+window = sg.Window('Lex Solutions', layout)
+
+def clear_input():
+    for key in values:
+        window[key]('')
+    return None
+
+while True:
+    event, values = window.read()
+    if event == sg.WIN_CLOSED or event == 'Exit':
+        break
+    if event == 'Clear':
+        clear_input()
+    if event == 'Submit':
+        df = df.append(values, ignore_index=True)
+        df.to_excel(EXCEL_FILE, index=False)
+        sg.popup('Data Saved')
+        clear_input()
+window.close()
