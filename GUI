@@ -1,52 +1,84 @@
-import PySimpleGUI as sg
+from tkinter import *
 import pandas as pd
-import numpy as np
-import openpyxl
-from openpyxl import Workbook, load_workbook
 
-sg.theme('SystemDefaultForReal')
+def submit_fields():
+    path = 'ListOfContractsAllServices.xlsx'
+    df1 = pd.read_excel(path)
+    SeriesA = df1['Type Of Service']
+    SeriesB = df1['Year']
+    SeriesC = df1['Contracting Party']
+    SeriesD = df1['Type of Contract']
+    SeriesE = df1['Service Description']
+    SeriesF = df1['Service Region']
+    SeriesG = df1['Contract Term/Duration']
+    SeriesH = df1['Details of Contract Term']
+    SeriesI = df1['BSI Terms or Supplier Terms']
+    A = pd.Series(entry1.get())
+    B = pd.Series(entry2.get())
+    C = pd.Series(entry3.get())
+    D = pd.Series(entry4.get())
+    E = pd.Series(entry5.get())
+    F = pd.Series(entry6.get())
+    G = pd.Series(entry7.get())
+    H = pd.Series(entry8.get())
+    I = pd.Series(entry9.get())
+    SeriesA = SeriesA.append(A)
+    SeriesB = SeriesB.append(B)
+    SeriesC = SeriesC.append(C)
+    SeriesD = SeriesD.append(D)
+    SeriesE = SeriesE.append(E)
+    SeriesF = SeriesF.append(F)
+    SeriesG = SeriesG.append(G)
+    SeriesH = SeriesH.append(H)
+    SeriesI = SeriesI.append(I)
+    df2 = pd.DataFrame({'Type of Service': SeriesA, 'Year': SeriesB, 'Contracting Party': SeriesC, 'Type Of Contract': SeriesD, 'Service Description': SeriesE,
+                        'Service Region': SeriesF, 'Contract Term/Duration': SeriesG, 'Details or Contract Term': SeriesH,
+                        'BSI Terms or Supplier Terms': SeriesI})
+    df2.to_excel(path, index=False)
+    entry1.delete(0, END)
+    entry2.delete(0, END)
+    entry3.delete(0, END)
+    entry4.delete(0, END)
+    entry5.delete(0, END)
+    entry6.delete(0, END)
+    entry7.delete(0, END)
+    entry8.delete(0, END)
+    entry9.delete(0, END)
 
-EXCEL_FILE = 'ListOfContractsAllServices.xlsx'
-df = pd.read_excel(EXCEL_FILE)
+master = Tk()
+master.title('Lex Solutions')
 
+Label(master, text='Type of Service').grid(row=0)
+Label(master, text='Year').grid(row=1)
+Label(master, text='Contracting Party').grid(row=2)
+Label(master, text='Type Of Contract').grid(row=3)
+Label(master, text='Service Description').grid(row=4)
+Label(master, text='Service Region').grid(row=5)
+Label(master, text='Contract Term/Duration').grid(row=6)
+Label(master, text='Details or Contract Term').grid(row=7)
+Label(master, text='BSI Terms or Supplier Terms').grid(row=8)
 
-layout = [
-    [sg.Text('Type of Service', size=(25,1)), sg.Combo(['Procured Services',
-                                                        'Audit Partnerships',
-                                                        'CSIR/Professional Services', 'CSIR Reseller SaaS Agreements', 'Accredited Certification Audits',
-                                                        'Customised Audits', 'Training', 'Consultancy Services',
-                                                        'Product Trials', 'International Projects'], key='Type of Service')],
-    [sg.Text('Year', size=(25,1)), sg.Combo(['2018', '2019', '2020', '2021', '2022', '2023'], key='Year')],
-    [sg.Text('Contracting Party', size=(25,1)), sg.InputText(key='Contracting Party')],
-    [sg.Text('Type of Contract', size=(25,1)), sg.Combo(['Consortium Agreement', 'Order Form', 'Amendment Agreement', 'Change Control Note',
-                                                          'Statement of Work', 'Reseller Agreement', 'MOU', 'Framework Agreement/MSA',
-                                                          'Services Agreement', 'Partner Agreement'], key='Type of Contract')],
-    [sg.Text('Service Description', size=(25,1)), sg.InputText(key='Service Description')],
-    [sg.Text('Service Region', size=(25,1)), sg.InputText(key='Service Region')],
-    [sg.Text('Contract Term/Duration', size=(25,1)), sg.Combo(['More than a Year', 'Less than a Year', 'Indefinite',
-                                                               'Not Applicable', 'Not Stated'], key='Contract Term/Duration')],
-    [sg.Text('Details of Contract Term', size=(25,1)), sg.InputText(key='Details of Contract Term')],
-    [sg.Text('BSI Terms or Supplier Terms', size=(25,1)), sg.Combo(['Supplier Terms', 'BSI IT MSA', 'BSI Consultancy Terms',
-                                                                    'BSI Terms of Business', 'BSI Subcontracting Terms', 'BSI Terms'], key='BSI Terms or Supplier Terms')],
-    [sg.Submit(), sg.Button('Clear'), sg.Exit()]
-]
+entry1 = Entry(master)
+entry2 = Entry(master)
+entry3 = Entry(master)
+entry4 = Entry(master)
+entry5 = Entry(master)
+entry6 = Entry(master)
+entry7 = Entry(master)
+entry8 = Entry(master)
+entry9 = Entry(master)
 
-window = sg.Window('Lex Solutions', layout)
+entry1.grid(row=0, column=1)
+entry2.grid(row=1, column=1)
+entry3.grid(row=2, column=1)
+entry4.grid(row=3, column=1)
+entry5.grid(row=4, column=1)
+entry6.grid(row=5, column=1)
+entry7.grid(row=6, column=1)
+entry8.grid(row=7, column=1)
+entry9.grid(row=8, column=1)
 
-def clear_input():
-    for key in values:
-        window[key]('')
-    return None
+Button(master, text='Quit', command = master.quit).grid(row=9, column=0, pady=4)
+Button(master, text='Submit', command=  submit_fields).grid(row=9, column=1, pady=4)
 
-while True:
-    event, values = window.read()
-    if event == sg.WIN_CLOSED or event == 'Exit':
-        break
-    if event == 'Clear':
-        clear_input()
-    if event == 'Submit':
-        df = df.append(values, ignore_index=True)
-        df.to_excel(EXCEL_FILE, index=False)
-        sg.popup('Data Saved')
-        clear_input()
-window.close()
+mainloop()
